@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LightsMP - Community Portal</title>
+    <style>
+        :root {
+            --yellow: #ffcc00;
+            --yellow-bright: #ffdd44;
+            --black: #050508;
+            --dark-bg: #0f1118;
+            --card-bg: #161a25;
+            --card-hover: #1b202e;
+            --border: #222838;
+            --text: #f0f0f0;
+            --muted: #a0a0b0;
+            --success: #28a745;
+            --review: #2b78e4;
+            --reject: #dc3545;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif; }
+        body { background: linear-gradient(180deg, var(--black) 0%, var(--dark-bg) 100%); color: var(--text); line-height: 1.7; min-height: 100vh; }
+
+        /* Navigation */
+        nav { background: rgba(15, 17, 24, 0.95); border-bottom: 2px solid var(--yellow); padding: 1.2rem 5%; position: sticky; top: 0; z-index: 1000; backdrop-filter: blur(8px); }
+        .nav-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+        .logo { color: var(--yellow); font-size: 1.6rem; font-weight: 800; text-decoration: none; letter-spacing: 0.5px; }
+        .nav-links { display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap; }
+        .nav-links a { color: var(--text); text-decoration: none; font-weight: 500; padding: 0.4rem 0; border-bottom: 2px solid transparent; transition: all 0.25s ease; }
+        .nav-links a:hover, .nav-links a.active { color: var(--yellow); border-bottom-color: var(--yellow); }
+        .btn { padding: 0.6rem 1.4rem; border-radius: 6px; border: none; cursor: pointer; font-weight: 600; text-decoration: none; display: inline-block; transition: transform 0.2s, background 0.2s; }
+        .btn:hover { transform: translateY(-1px); }
+        .btn-yellow { background: linear-gradient(135deg, var(--yellow) 0%, var(--yellow-bright) 100%); color: #000; box-shadow: 0 2px 10px rgba(255, 204, 0, 0.25); }
+        .btn-black { background: var(--card-bg); color: var(--text); border: 2px solid var(--yellow); }
+        .btn-black:hover { background: var(--card-hover); }
+
+        /* Main Container */
+        main { max-width: 1200px; margin: 2rem auto; padding: 0 5% 4rem; }
+        section { margin-bottom: 3.5rem; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        h1, h2, h3 { color: var(--yellow); margin-bottom: 1.2rem; font-weight: 700; }
+        h1 { font-size: 2.2rem; }
+        .card { background: var(--card-bg); padding: 2rem; border-radius: 12px; border: 1px solid var(--border); border-left: 4px solid var(--yellow); margin-bottom: 1.5rem; box-shadow: 0 4px 20px rgba(0,0,0,0.3); transition: transform 0.2s; }
+        .card:hover { transform: translateY(-2px); }
+
+        /* Forms */
+        form { display: flex; flex-direction: column; gap: 1rem; max-width: 650px; }
+        input, textarea, select { padding: 0.9rem 1rem; background: var(--dark-bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 1rem; transition: border-color 0.2s; }
+        input:focus, textarea:focus, select:focus { outline: none; border-color: var(--yellow); box-shadow: 0 0 0 3px rgba(255,204,0,0.1); }
+        label { font-weight: 600; color: #ddd; }
+        .status { padding: 0.3rem 0.7rem; border-radius: 4px; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; }
+        .status.pending { background: #33384c; color: #fff; }
+        .status.reviewing { background: var(--review); color: #fff; }
+        .status.accepted { background: var(--success); color: #fff; }
+        .status.rejected { background: var(--reject); color: #fff; }
+        .alert { padding: 1rem; border-radius: 6px; margin: 1rem 0; display: none; }
+        .alert.success { background: rgba(40, 167, 69, 0.15); border: 1px solid var(--success); color: #a5e9b3; }
+
+        /* Scrollable Comment Lists */
+        .scroll-list { max-height: 350px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; background: var(--dark-bg); margin-top: 1rem; }
+        .scroll-list::-webkit-scrollbar { width: 8px; }
+        .scroll-list::-webkit-scrollbar-track { background: var(--card-bg); }
+        .scroll-list::-webkit-scrollbar-thumb { background: var(--yellow); border-radius: 4px; }
+        .item { padding: 1rem 1.2rem; border-bottom: 1px solid var(--border); transition: background 0.2s; }
+        .item:last-child { border-bottom: none; }
+        .item:hover { background: var(--card-bg); }
+        .meta { font-size: 0.85rem; color: var(--muted); margin-top: 0.3rem; }
+        .discord-link { display: inline-block; margin-top: 1rem; color: var(--yellow); font-weight: 600; text-decoration: none; }
+        .discord-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="#" class="logo">LightsMP</a>
+            <div class="nav-links">
+                <a href="#home" class="active">Home</a>
+                <a href="#dashboard">Dashboard</a>
+                <a href="#suggestions">Suggestions</a>
+                <a href="#feedback">Feedback</a>
+                <a href="#admin" class="btn btn-black">Staff</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Home -->
+        <section id="home">
+            <div class="card">
+                <h1>Welcome to LightsMP</h1>
+                <p>Your community Minecraft server portal. Join us for events, PvP, and building together!</p>
+            </div>
+            <div class="card">
+                <h2>📊 Server Status</h2>
+                <p><strong>Status:</strong> Online 🟢</p>
+                <p><strong>Players:</strong> <span style="font-weight:bold; color:var(--yellow); font-size:1.2rem;">10 / 69</span></p>
+                <p><strong>Version:</strong> 1.21.11</p>
+                <p><strong>IP:</strong> <span style="color:var(--yellow); font-weight:bold;">lightsmpxyz.playwithbao.com</span></p>
+            </div>
+            <div class="card">
+                <h2>📅 Daily Events</h2>
+                <p>• 10:00 — Daily Race</p>
+                <p>• 14:00 — PvP Arena</p>
+                <p>• 19:00 — Community Gathering</p>
+            </div>
+            <div class="card">
+                <h2>👑 Weekly Officers</h2>
+                <p><strong>Mayor:</strong> Placidity</p>
+                <p><strong>Assistant Mayor:</strong> SD</p>
+                <p><strong>Spawn Protector:</strong> BKayHA</p>
+            </div>
+            <div class="card">
+                <h2>💬 Discord</h2>
+                <p>Join our community: <a href="https://discord.gg/s6xnnh97q" target="_blank" style="color:var(--yellow); font-weight:600;">discord.gg/s6xnnh97q</a></p>
+            </div>
+            <div class="card">
+                <h2>ℹ️ About LightsMP</h2>
+                <p>LightsMP is a friendly survival & community server focused on fair play, fun events, and creativity!</p>
+            </div>
+        </section>
+
+        <!-- Dashboard -->
+        <section id="dashboard">
+            <div class="card">
+                <h2>👤 Your Dashboard</h2>
+                <p><strong>Username:</strong> LightsPlayer</p>
+                <p><strong>Account Created:</strong> January 15, 2026</p>
+                <hr style="border-color:var(--border); margin:1.2rem 0;">
+                <h3>Profile</h3>
+                <p>Email: player@example.com</p>
+                <button class="btn btn-black">Change Password</button>
+            </div>
+            <div class="card">
+                <h3>📝 Your Activity</h3>
+                <p><strong>Your Submissions:</strong></p>
+                <ul id="user-submissions" style="margin:1rem; list-style-type:square; padding-left:1.2rem;"></ul>
+                <a href="#home" class="btn btn-yellow" style="margin-top:1rem;">Logout</a>
+            </div>
+        </section>
+
+        <!-- Suggestions -->
+        <section id="suggestions">
+            <div class="card">
+                <h2>💡 Submit a Suggestion</h2>
+                <div id="sugg-alert" class="alert success">✅ Suggestion submitted successfully!</div>
+                <form id="suggestion-form">
+                    <label>Title</label>
+                    <input type="text" id="sugg-title" placeholder="Short idea title..." required>
+                    <label>Category</label>
+                    <select id="sugg-category">
+                        <option value="puregrind">PureGrind</option>
+                        <option value="discord">Discord</option>
+                    </select>
+                    <label>Description</label>
+                    <textarea id="sugg-desc" rows="5" placeholder="Explain your suggestion..." required></textarea>
+                    <button type="submit" class="btn btn-yellow">Submit Suggestion</button>
+                </form>
+            </div>
+            <div class="card">
+                <h3>📋 All Suggestions & Comments</h3>
+                <div id="suggestions-list" class="scroll-list"></div>
+            </div>
+        </section>
+
+        <!-- Feedback -->
+        <section id="feedback">
+            <div class="card">
+                <h2>💭 Send Feedback</h2>
+                <div id="feed-alert" class="alert success">✅ Feedback sent successfully!</div>
+                <form id="feedback-form">
+                    <label>Type</label>
+                    <select id="feed-type">
+                        <option>Server</option>
+                        <option>Community</option>
+                        <option>Events</option>
+                        <option>Staff</option>
+                        <option>Website</option>
+                        <option>Other</option>
+                    </select>
+                    <label>Message</label>
+                    <textarea id="feed-msg" rows="5" placeholder="Write your feedback..." required></textarea>
+                    <label>Rating (1–5)</label>
+                    <input type="range" id="feed-rating" min="1" max="5" value="5">
+                    <br>
+                    <button type="submit" class="btn btn-yellow">Send Feedback</button>
+                </form>
+            </div>
+            <div class="card">
+                <h3>📝 All Feedback & Comments</h3>
+                <div id="feedback-list" class="scroll-list"></div>
+            </div>
+        </section>
+
+        <!-- Staff / Admin -->
+        <section id="admin">
+            <div class="card">
+                <h2>🛡️ Staff Dashboard</h2>
+                <p>Only authorized staff can manage submissions.</p>
+                <hr style="border-color:var(--border); margin:1.2rem 0;">
+                <h3>Manage Suggestions</h3>
+                <div id="staff-sugg-list" class="scroll-list"></div>
+                <a href="https://discord.gg/s6xnnh97q" target="_blank" class="discord-link">🔗 Join Official Discord Server</a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2026 LightsMP — All rights reserved.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // === STORAGE KEYS ===
+        const SUGG_STORAGE = 'lightsmp_suggestions';
+        const FEED_STORAGE = 'lightsmp_feedback';
+
+        // === PAGE NAVIGATION ===
+        const sections = document.querySelectorAll('main > section');
+        const navLinks = document.querySelectorAll('.nav-links a');
+
+        function showSection(id) {
+            sections.forEach(s => s.style.display = 'none');
+            const target = document.getElementById(id);
+            if (target) target.style.display = 'block';
+            navLinks.forEach(l => l.classList.remove('active'));
+            navLinks.forEach(l => {
+                if (l.getAttribute('href') === '#' + id) l.classList.add('active');
+            });
+        }
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', e => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href').substring(1);
+                showSection(targetId);
+                history.pushState(null, '', '#' + targetId);
+            });
+        });
+
+        // === SAVE & LOAD FUNCTIONS ===
+        function saveSuggestions(list) {
+            localStorage.setItem(SUGG_STORAGE, JSON.stringify(list));[[__LINK_ICON]](https://developer.mozilla.org/zh-CN/docs/Learn_web_development/Extensions/Client-side_APIs/Client-side_storage?f_link_type=f_linkinlinenote&flow_extra=eyJpbmxpbmVfZGlzcGxheV9wb3NpdGlvbiI6MCwiZG9jX3Bvc2l0aW9uIjowLCJkb2NfaWQiOiJhZmUwMzcyZjMxYjFkMDUxLWE3M2JlNTk4YzExNmFjYzUifQ%3D%3D "[__LINK_ICON]")
+        }
+        function loadSuggestions() {
+            const data = localStorage.getItem(SUGG_STORAGE);[[__LINK_ICON]](https://developer.mozilla.org/zh-CN/docs/Learn_web_development/Extensions/Client-side_APIs/Client-side_storage?f_link_type=f_linkinlinenote&flow_extra=eyJpbmxpbmVfZGlzcGxheV9wb3NpdGlvbiI6MCwiZG9jX3Bvc2l0aW9uIjowLCJkb2NfaWQiOiJhZmUwMzcyZjMxYjFkMDUxLWE3M2JlNTk4YzExNmFjYzUifQ%3D%3D "[__LINK_ICON]")
+            return data ? JSON.parse(data) : [];[[__LINK_ICON]](https://developer.mozilla.org/zh-CN/docs/Learn_web_development/Extensions/Client-side_APIs/Client-side_storage?f_link_type=f_linkinlinenote&flow_extra=eyJkb2NfcG9zaXRpb24iOjAsImRvY19pZCI6ImFmZTAzNzJmMzFiMWQwNTEtYTczYmU1OThjMTE2YWNjNSIsImlubGluZV9kaXNwbGF5X3Bvc2l0aW9uIjowfQ%3D%3D "[__LINK_ICON]")
+        }
+        function saveFeedback(list) {
+            localStorage.setItem(FEED_STORAGE, JSON.stringify(list));[[__LINK_ICON]](https://developer.mozilla.org/zh-CN/docs/Learn_web_development/Extensions/Client-side_APIs/Client-side_storage?f_link_type=f_linkinlinenote&flow_extra=eyJpbmxpbmVfZGlzcGxheV9wb3NpdGlvbiI6MCwiZG9jX3Bvc2l0aW9uIjowLCJkb2NfaWQiOiJhZmUwMzcyZjMxYjFkMDUxLWE3M2JlNTk4YzExNmFjYzUifQ%3D%3D "[__LINK_ICON]")
+        }
+        function loadFeedback() {
+            const data = localStorage.getItem(FEED_STORAGE);[[__LINK_ICON]](https://developer.mozilla.org/zh-CN/docs/Learn_web_development/Extensions/Client-side_APIs/Client-side_storage?f_link_type=f_linkinlinenote&flow_extra=eyJkb2NfcG9zaXRpb24iOjAsImRvY19pZCI6ImFmZTAzNzJmMzFiMWQwNTEtYTczYmU1OThjMTE2YWNjNSIsImlubGluZV9kaXNwbGF5X3Bvc2l0aW9uIjowfQ%3D%3D "[__LINK_ICON]")
+            return data ? JSON.parse(data) : [];[[__LINK_ICON]](https://developer.mozilla.org/zh-CN/docs/Learn_web_development/Extensions/Client-side_APIs/Client-side_storage?f_link_type=f_linkinlinenote&flow_extra=eyJpbmxpbmVfZGlzcGxheV9wb3NpdGlvbiI6MCwiZG9jX3Bvc2l0aW9uIjowLCJkb2NfaWQiOiJhZmUwMzcyZjMxYjFkMDUxLWE3M2JlNTk4YzExNmFjYzUifQ%3D%3D "[__LINK_ICON]")
+        }
+
+        // === RENDER FUNCTIONS ===
+        function renderSuggestions() {
+            const all = loadSuggestions();
+            const listEl = document.getElementById('suggestions-list');
+            const staffEl = document.getElementById('staff-sugg-list');
+            const userEl = document.getElementById('user-submissions');
+            listEl.innerHTML = ''; staffEl.innerHTML = ''; userEl.innerHTML = '';
+
+            all.forEach(item => {
+                // Public list
+                const div = document.createElement('div');
+                div.className = 'item';
+                div.innerHTML = `
+                    <strong>${item.title}</strong> — ${item.category} <span class="status ${item.status.toLowerCase()}">${item.status}</span>
+                    <p class="meta">by ${item.author} • ${item.time}</p>
+                    <p style="margin-top:0.5rem; color:#ccc;">${item.desc}</p>
+                `;
+                listEl.appendChild(div);
+
+                // Staff list
+                const staffDiv = div.cloneNode(true);
+                const ctrl = document.createElement('div');
+                ctrl.innerHTML = `
+                    Status:
+                    <select class="status-select" data-id="${item.id}" style="padding:0.3rem; margin:0 0.5rem; background:var(--dark-bg); color:white; border:1px solid var(--border); border-radius:4px;">
+                        <option value="Pending" ${item.status==='Pending'?'selected':''}>Pending</option>
+                        <option value="Reviewing" ${item.status==='Reviewing'?'selected':''}>Reviewing</option>
+                        <option value="Accepted" ${item.status==='Accepted'?'selected':''}>Accepted</option>
+                        <option value="Rejected" ${item.status==='Rejected'?'selected':''}>Rejected</option>
+                    </select>
+                    <button class="btn btn-black update-btn" data-id="${item.id}" style="padding:0.2rem 0.6rem;">Update</button>
+                    <button class="btn btn-black del-btn" data-id="${item.id}" style="padding:0.2rem 0.6rem;">Delete</button>
+                `;
+                staffDiv.appendChild(ctrl);
+                staffEl.appendChild(staffDiv);
+
+                // User dashboard
+                const li = document.createElement('li');
+                li.textContent = `${item.title} — ${item.category} `;
+                const span = document.createElement('span');
+                span.className = `status ${item.status.toLowerCase()}`;
+                span.textContent = item.status;
+                li.appendChild(span);
+                userEl.appendChild(li);
+            });
+
+            bindStaffActions();
+        }
+
+        function renderFeedback() {
+            const all = loadFeedback();
+            const listEl = document.getElementById('feedback-list');
+            listEl.innerHTML = '';
+
+            all.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'item';
+                div.innerHTML = `
+                    <strong>${item.type}</strong> — ⭐${'⭐'.repeat(item.rating)}${'☆'.repeat(5-item.rating)}
+                    <p class="meta">by ${item.author} • ${item.time}</p>
+                    <p style="margin-top:0.5rem; color:#ccc;">${item.msg}</p>
+                `;
+                listEl.appendChild(div);
+            });
+        }
+
+        // === BIND STAFF ACTIONS ===
+        function bindStaffActions() {
+            document.querySelectorAll('.update-btn').forEach(btn => {
+                btn.onclick = () => {
+                    const id = btn.dataset.id;
+                    const sel = document.querySelector(`.status-select[data-id="${id}"]`);
+                    const all = loadSuggestions();
+                    const idx = all.findIndex(x => x.id === id);
+                    if (idx > -1) {
+                        all[idx].status = sel.value;
+                        saveSuggestions(all);
+                        renderSuggestions();
+                    }
+                };
+            });
+            document.querySelectorAll('.del-btn').forEach(btn => {
+                btn.onclick = () => {
+                    if (confirm('Delete this suggestion?')) {
+                        const id = btn.dataset.id;
+                        saveSuggestions(loadSuggestions().filter(x => x.id !== id));
+                        renderSuggestions();
+                    }
+                };
+            });
+        }
+
+        // === FORM SUBMITS ===
+        const suggForm = document.getElementById('suggestion-form');
+        const suggAlert = document.getElementById('sugg-alert');
+        suggForm.addEventListener('submit', e => {
+            e.preventDefault();
+            const title = document.getElementById('sugg-title').value.trim();
+            const category = document.getElementById('sugg-category').value;
+            const desc = document.getElementById('sugg-desc').value.trim();
+            const now = new Date();
+            const timeStr = now.toLocaleString();
+            const newItem = {
+                id: Date.now().toString(),
+                title, category, desc,
+                author: 'You',
+                time: timeStr,
+                status: 'Pending'
+            };
+            const all = loadSuggestions();
+            all.unshift(newItem);
+            saveSuggestions(all);
+            renderSuggestions();
+            suggAlert.style.display = 'block';
+            suggForm.reset();
+            setTimeout(() => suggAlert.style.display = 'none', 4000);
+        });
+
+        const feedForm = document.getElementById('feedback-form');
+        const feedAlert = document.getElementById('feed-alert');
+        feedForm.addEventListener('submit', e => {
+            e.preventDefault();
+            const type = document.getElementById('feed-type').value;
+            const msg = document.getElementById('feed-msg').value.trim();
+            const rating = parseInt(document.getElementById('feed-rating').value);
+            const now = new Date();
+            const timeStr = now.toLocaleString();
+            const newItem = {
+                id: Date.now().toString(),
+                type, msg, rating,
+                author: 'You',
+                time: timeStr
+            };
+            const all = loadFeedback();
+            all.unshift(newItem);
+            saveFeedback(all);
+            renderFeedback();
+            feedAlert.style.display = 'block';
+            feedForm.reset();
+            setTimeout(() => feedAlert.style.display = 'none', 4000);
+        });
+
+        // === INIT LOAD ===
+        window.addEventListener('load', () => {
+            const hash = location.hash.slice(1) || 'home';
+            showSection(hash);
+            renderSuggestions();
+            renderFeedback();
+        });
+    </script>
+</body>
+</html>
